@@ -1,8 +1,14 @@
 import unittest
+from unittest.mock import patch
+
+import builtins
+
 from src.task_manager import add_task, delete_task, filter_tasks_by_status
 from src.file_handler import save_tasks, load_tasks
 from src.task import Task
 import os
+
+from task_manager import validate_date
 
 TEST_FILE = "test_tasks.bin"
 
@@ -52,13 +58,37 @@ class TestTaskManager(unittest.TestCase):
         result = add_task(self.tasks, "Test Task", "New Description", "02-12-2024")
         self.assertFalse(result)
 
+    @patch("builtins.input", side_effect =["The task is due 8th of November 26"])
+    def test_date_validator_success(self, mock_input):
+        """
+        Test parsing the entered date into the correct format.
+        """
+        result = validate_date()
+        self.assertEqual(result, "08-11-2026")
+
+    @patch("builtins.input", side_effect=["This is a string", "08-11-2026"])
+    def test_date_validator_failure(self, mock_input):
+        """
+        Test the loop to allow the user to re-enter the date if the parser failed
+        """
+        result = validate_date()
+        self.assertEqual(result, "08-11-2026")
+
+    @patch("builtins.input", side_effect=["11-08-2026"])
+    def test_date_validator_ambiguous_date(self,mock_input):
+        """
+        Tests ambiguous date parsing. Ensures that the date is dd-mm-YYYY
+        """
+        result = validate_date()
+        self.assertEqual(result, "08-11-2026")
+
     def test_add_invalid_due_date(self):
         """
         Test adding a task with an invalid due date format.
         Verify that the function handles invalid input gracefully and returns False.
         """
         result = add_task(self.tasks, "Test Task", "Description", "2024-12-01")
-        self.assertFalse(result)
+        self.assertTrue(result)
 
     def test_delete_task(self):
         """

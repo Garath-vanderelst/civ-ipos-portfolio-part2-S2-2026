@@ -1,6 +1,11 @@
+import dateutil
+from dateutil.parser import ParserError
+
 from src.task import Task
 from src.file_handler import save_tasks
 from datetime import datetime
+import dateutil.parser
+
 
 
 def add_task(tasks, title, description, due_date):
@@ -108,3 +113,22 @@ def filter_tasks_by_status(tasks, status):
         list: A list of Task objects that match the specified status.
     """
     return [task for task in tasks if task.status == status]
+
+def validate_date():
+    """
+    Requests a due date for the item, validates it and returns it.
+
+    Returns:
+        str: The due date of the item.
+    """
+    while True:
+        try:
+            date_input = input("Due Date (DD-MM-YYYY): ")
+            parsed = dateutil.parser.parse(date_input,dayfirst=True,fuzzy=True)
+
+        except ParserError:
+            print("Error: Please enter a valid date")
+
+        else:
+            return parsed.strftime("%d-%m-%Y")
+
