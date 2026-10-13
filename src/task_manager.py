@@ -102,6 +102,8 @@ def list_tasks(tasks, status=None):
     table.add_column("Due Date", no_wrap=True)
     table.add_column("Status", style="white", no_wrap=True)
 
+    rich_table_data = False
+
     for task in filtered:
         task_date = datetime.strptime(task.due_date, "%d-%m-%Y").date()
         today = datetime.today().date()
@@ -112,22 +114,23 @@ def list_tasks(tasks, status=None):
         elif task_date <= today + timedelta(days=7):
             date_style = "yellow"
         elif task_date > today + timedelta(days=7):
-            date_style = "blue"
+            date_style = "white"
         else:
-            date_style = "purple"
+            date_style = "white"
 
         styled_date = f"[{date_style}]{task.due_date}[/{date_style}]"
+
         try:
             table.add_row(task.title, task.description, styled_date, task.status)
+            rich_table_data = True
 
         except MarkupError:
+
             print(f"{task.title} | {task.description} | "
             f"Due: {task.due_date} | Status: {task.status}")
 
-        else:
-            console.print(table)
-
-
+    if rich_table_data:
+        console.print(table)
 
 def filter_tasks_by_status(tasks, status):
     """

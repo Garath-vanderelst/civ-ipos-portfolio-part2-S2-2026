@@ -95,8 +95,5 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(len(loaded_tasks), 1)
         self.assertEqual(loaded_tasks[0].title, "Persistent Task")
 
-
-
-
 if __name__ == "__main__":
     unittest.main()
