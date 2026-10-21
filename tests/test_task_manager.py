@@ -74,7 +74,7 @@ class TestTaskManager(unittest.TestCase):
         result = validate_date()
         self.assertEqual(result, "08-11-2026")
 
-    @patch("builtins.input", side_effect=["11-08-2026"])
+    @patch("builtins.input", side_effect=["08-11-2026"])
     def test_date_validator_ambiguous_date(self,mock_input):
         """
         Tests ambiguous date parsing. Ensures that the date is dd-mm-YYYY
