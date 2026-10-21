@@ -1,4 +1,4 @@
-from src.task_manager import add_task, delete_task, list_tasks
+from src.task_manager import add_task, delete_task, list_tasks, validate_date
 from src.file_handler import load_tasks
 
 
@@ -15,7 +15,7 @@ def main():
         if choice == "1":
             title = input("Title: ")
             description = input("Description: ")
-            due_date = input("Due Date (DD-MM-YYYY): ")
+            due_date = validate_date()
             add_task(tasks, title, description, due_date)
         elif choice == "2":
             title = input("Title of the task to delete: ")
