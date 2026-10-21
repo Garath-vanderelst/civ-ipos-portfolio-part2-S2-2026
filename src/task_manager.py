@@ -3,12 +3,10 @@ from dateutil.parser import ParserError
 from rich.errors import MarkupError
 from src.task import Task
 from src.file_handler import save_tasks
-import dateutil.parser
 from rich import print, box
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime, timedelta
-
 
 def add_task(tasks, title, description, due_date):
     """
@@ -74,8 +72,7 @@ def list_tasks(tasks, status=None):
 
     Args:
         tasks (list): The list of existing Task objects.
-        status (str, optional): The status to filter tasks
-        by (e.g., "pending" or "completed").
+        status (str, optional): The status to filter tasks by (e.g., "pending" or "completed").
 
     Returns:
         None
