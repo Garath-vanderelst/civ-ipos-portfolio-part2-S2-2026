@@ -1,11 +1,13 @@
 import dateutil
 from dateutil.parser import ParserError
-
+from rich.errors import MarkupError
 from src.task import Task
 from src.file_handler import save_tasks
-from datetime import datetime
 import dateutil.parser
-
+from rich import print, box
+from rich.console import Console
+from rich.table import Table
+from datetime import datetime, timedelta
 
 
 def add_task(tasks, title, description, due_date):
@@ -94,12 +96,43 @@ def list_tasks(tasks, status=None):
     if not filtered:
         print("No tasks found.")
         return
-    for task in filtered:
-        print(
-            f"{task.title} | {task.description} | "
-            f"Due: {task.due_date} | Status: {task.status}"
-        )
 
+    console = Console()
+    table = Table(title="Task Details", box=box.SQUARE)
+    table.add_column("Title", style="white", no_wrap=True)
+    table.add_column("Description", style="white", no_wrap=True)
+    table.add_column("Due Date", no_wrap=True)
+    table.add_column("Status", style="white", no_wrap=True)
+
+    rich_table_data = False
+
+    for task in filtered:
+        task_date = datetime.strptime(task.due_date, "%d-%m-%Y").date()
+        today = datetime.today().date()
+        if task.status == "completed":
+            date_style = "green"
+        elif task_date < today:
+            date_style = "red"
+        elif task_date <= today + timedelta(days=7):
+            date_style = "yellow"
+        elif task_date > today + timedelta(days=7):
+            date_style = "white"
+        else:
+            date_style = "white"
+
+        styled_date = f"[{date_style}]{task.due_date}[/{date_style}]"
+
+        try:
+            table.add_row(task.title, task.description, styled_date, task.status)
+            rich_table_data = True
+
+        except MarkupError:
+
+            print(f"{task.title} | {task.description} | "
+            f"Due: {task.due_date} | Status: {task.status}")
+
+    if rich_table_data:
+        console.print(table)
 
 def filter_tasks_by_status(tasks, status):
     """
