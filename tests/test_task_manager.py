@@ -88,7 +88,7 @@ class TestTaskManager(unittest.TestCase):
         Verify that the function handles invalid input gracefully and returns False.
         """
         result = add_task(self.tasks, "Test Task", "Description", "2024-12-01")
-        self.assertTrue(result)
+        self.assertFalse(result)
 
     def test_delete_task(self):
         """
